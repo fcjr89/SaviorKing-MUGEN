@@ -1,0 +1,3 @@
+Savior King — original pack
+Sprites, states, commands, sounds built for this character.
+Mech Zangief was used only as an early layout reference and is not in this pack.

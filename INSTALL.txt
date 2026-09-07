@@ -1,0 +1,10 @@
+Savior King — M.U.G.E.N 1.0 / 1.1 and IKEMEN GO
+================================================
+
+1. Copy the SaviorKing folder into chars/
+2. Add this line to data/select.def:
+     SaviorKing/SaviorKing.def
+3. Engine must have data/common1.cns (stcommon)
+
+This is an original character (not Mech Zangief).
+See movelist.txt for commands.

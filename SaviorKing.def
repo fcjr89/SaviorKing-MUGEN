@@ -1,0 +1,46 @@
+[Info]
+name = "Savior King"
+displayname = "Savior King"
+versiondate = 09,07,2026
+mugenversion = 1.0
+localcoord = 320, 240
+author = "original pack"
+pal.defaults = 1,2,3,4,5,6
+
+[Files]
+sprite = SaviorKing.sff
+anim = SaviorKing.air
+sound = SaviorKing.snd
+cmd = SaviorKing.cmd
+cns = SaviorKing.cns
+st = SaviorKing.cns
+stcommon = common1.cns
+pal1 = pals/SaviorKing1.act
+pal2 = pals/SaviorKing2.act
+pal3 = pals/SaviorKing3.act
+pal4 = pals/SaviorKing4.act
+pal5 = pals/SaviorKing5.act
+pal6 = pals/SaviorKing6.act
+pal7 = pals/SaviorKing7.act
+pal8 = pals/SaviorKing8.act
+pal9 = pals/SaviorKing9.act
+pal10 = pals/SaviorKing10.act
+pal11 = pals/SaviorKing11.act
+pal12 = pals/SaviorKing12.act
+movelist = movelist.txt
+
+[Palette Keymap]
+x = 1
+y = 2
+z = 3
+a = 4
+b = 5
+c = 6
+x2 = 7
+y2 = 8
+z2 = 9
+a2 = 10
+b2 = 11
+c2 = 12
+
+[Arcade]

@@ -1,0 +1,7 @@
+Open in Fighter Factory 3
+1. File > Open project files:
+   SaviorKing.sff  SaviorKing.air  SaviorKing.def  SaviorKing.cns  SaviorKing.cmd  SaviorKing.snd
+2. work/sprites/ contains PNG export named GROUP-INDEX.png for re-import.
+3. Animations > Play to preview. Add CLSN 1 / CLSN 2 to tweak boxes.
+4. Alignment tool: axis is at the feet of each sprite.
+Index 0 of the palette is black (transparent).
