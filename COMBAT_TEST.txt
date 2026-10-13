@@ -1,0 +1,12 @@
+Savior King combat tests (Ikemen GO, 2026-09-07)
+================================================
+Opponent: Kung Fu Man 720, AI level 8 both sides, max power, speed 9, 1 round.
+
+SND: rebuilt; no "wav size is too small" warning.
+
+Results:
+1) SK win (KO + Hyper)  life 1100 vs 0   MatchTime 470
+2) SK win (KO + Hyper)  life 986 vs 0    MatchTime 800
+3) SK win (KO)          life 1003 vs 0   MatchTime 1265
+
+Series: 3-0 Savior King.

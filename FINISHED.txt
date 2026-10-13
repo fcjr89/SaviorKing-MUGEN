@@ -1,0 +1,36 @@
+Savior King — finished pack notes
+=================================
+Date: 2026-09-07
+
+Done in Fighter Factory Studio 3.7.5 (Linux) + AIR Clsn fit + Ryon Parts 4–5 polish:
+- Project opens cleanly (SaviorKing.def) with 0 syntax issues
+- Clsn2 hurtboxes fitted per animation from work/sprites pixel bounds
+- Clsn1 hitboxes fitted on active frames (no more single placeholder box)
+- Original AIR backup: SaviorKing.air.bak
+- Script: work/fit_clsn.py
+- [Data] volume = 100 (was 0; silent character — Ryon Part 4)
+- Starter AI in SaviorKing.cmd [Statedef -1], AILevel-gated (guard, jump, specials/supers, normals)
+- Human command ChangeStates unchanged; work when AILevel=0
+- Light EnvShake + AfterImage on supers 3000/3200; 3300 already had EnvShake
+- Tutorial ref: Ryon Teaches Mugen Complete Character Creation (Parts 4–5 finish criteria)
+
+Install: copy SaviorKing/ to chars/ and add SaviorKing/SaviorKing.def to select.def
+
+Ryon Parts 1–5 audit: see AUDIT_RYON.md
+- Stand walk/crouch/jump restored; throw 800/810/821 fixed; HitDef guardsound F6,0; volume=100
+- Zip: ../SaviorKing-finished.zip
+
+SFF rebuilt as v2 PNG32 with proper alpha (chroma flood-fill). Tested in Ikemen GO.
+
+Intro anim 190 no longer infinite; combat verified in Ikemen (SK win vs KFM AI).
+
+SND rebuilt (corrupt index fixed). Extra AI tests: SK 3-0 vs KFM720.
+
+Ultimate fighter pass (2026-09-07):
+- Gatlings + special cancels; Crown Rush L/M/H + EX 1050
+- Savior Charge 1400, Crown Dive 1500, Royal Headpress 1600
+- Savior Ascension super 3100; AI updated; MOTIF_COMPAT.md
+- Existing 1000/1100/1200/1300/3000/3200/3300/800 preserved
+- Size/life/power/attack/defence/AIR/SND/SFF not reverted
+
+New Grok Image sprite art integrated for idle/specials/portraits.

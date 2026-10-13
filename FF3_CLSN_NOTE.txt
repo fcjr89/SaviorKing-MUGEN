@@ -1,0 +1,16 @@
+Fighter Factory Studio — Clsn pass
+================================
+Open character folder:
+  /workspace/ff-char/SaviorKing/
+
+After CLSN_PASS (SFF opaque bounds):
+  SaviorKing.air              (Clsn1/Clsn2 first pass)
+  SaviorKing.air.bak-pre-clsn (backup)
+  CLSN_PASS.md                (method + samples + launch)
+
+Launch Linux FF Studio:
+  cd "/workspace/ff-char/ff3-linux/Fighter Factory Studio"
+  export LD_LIBRARY_PATH="$PWD:$LD_LIBRARY_PATH"
+  export QT_PLUGIN_PATH="$PWD/platforms"
+  ./ffs
+  # File → Open → /workspace/ff-char/SaviorKing/SaviorKing.def

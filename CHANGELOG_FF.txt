@@ -1,0 +1,206 @@
+Savior King — FF Clsn fit + polish notes
+========================================
+Date: 2026-09-07
+
+- Fitted Clsn2Default (hurt) and active Clsn1 (hit) boxes in SaviorKing.air
+  from pixel bounds of work/sprites/*.png (GROUP-INDEX.png).
+- Chroma-key near RGB(185,40,116) treated as transparent (distance ~40);
+  pure black / alpha padding ignored. Axis = content bottom-center (feet).
+- Clsn2Default per action = body bbox + head (upper ~28%) from first frame sprite.
+- Clsn1 on active frames = forward/protruding limb region for that frame's sprite.
+- Original AIR backed up as SaviorKing.air.bak.
+- Script: work/fit_clsn.py
+- Opened / verified in Linux Fighter Factory Studio 3.7.5
+- volume = 100 in SaviorKing.cns [Data] (Ryon Part 4: volume 0 = silent)
+- Starter AI block added to SaviorKing.cmd (AILevel > 0 / RoundState = 2):
+  guard, jump toward airborne, CrownRush/ThroneBreaker/RoyalSpin/Coronation,
+  CrownCrusher@1000, RoyalJudgment@2000, KingEatsAll@life<=330&power>=2000,
+  close normals (LP/MP/LK etc.) with P2BodyDist checks
+- Super juice: EnvShake + AfterImage on 3000/3200 (3300 already had EnvShake)
+- Tutorial: Ryon Teaches Mugen Complete Character Creation playlist (Parts 4–5)
+
+## 2026-09-07 — Transparency / SFF rebuild
+- Root cause: chroma-key pink (~RGB 185,40,116) was NOT palette index 0, so engines drew an opaque magenta box.
+- Fix: edge flood-fill chroma → transparent; rebuild as SFFv2 PNG32 (Ikemen-compatible, size-prefixed PNG blobs).
+- Backup of original indexed SFF: SaviorKing.sff.bak-pre-chroma
+- Playtested in Ikemen GO vs kfm720 — sprite renders clean.
+
+## 2026-09-07 — Combat / intro freeze
+- Intro Action 190 was a single frame with time=-1; Statedef 191 waited on AnimTime=0 → round never reached RoundState=2 (timer stuck, AI idle).
+- Fixed AIR 190/191 to finite 4×8f frames; Statedef 191 also ends on Time>=40.
+- Ikemen stress test: Savior King won 1-0 vs kfm720 AI8 (match log WinSide/Wins confirm).
+
+## 2026-09-07 — SND rebuild
+- SaviorKing.snd first subheader next-pointer was corrupt (triggered Ikemen "Sound 0,1375731712 ... wav size is too small").
+- Recovered 9 RIFF WAVE blobs; rebuilt clean ElecbyteSnd with groups (0,0)(0,1)(0,2)(1,0)(2,0)(3,0)(4,0)(5,0)(20,0).
+- Backup: SaviorKing.snd.bak-corrupt
+- Verified: no corrupt-sample warning on load.
+
+## 2026-09-07 — Extra AI matchups (Ikemen, AI8 vs AI8, speed 9)
+1. SK win KO+Hyper — life 1100/0 — MatchTime 470
+2. SK win KO+Hyper — life 986/0 — MatchTime 800
+3. SK win KO — life 1003/0 — MatchTime 1265
+Series: Savior King 3–0 Kung Fu Man 720.
+
+## 2026-09-07 — Ultimate fighter expansion
+- CMD: gatlings LP→MP→HP / LK→MK→HK (stand, crouch, jump) via movecontact
+- Special cancel from normals into CrownRush / ThroneBreaker / RoyalSpin
+- Crown Rush L/M/H (1000/1001/1002) strength vel/damage; EX Crown Rush 1050 (power 500, AfterImage)
+- Savior Charge 1400 (FF+P dash punch), Crown Dive 1500 (air QCF+K→52), Royal Headpress 1600 (air ~D,D+K)
+- Super Savior Ascension 3100 (QCB,QCB+K, 1 stock, EnvShake+AfterImage)
+- CMD priority: supers → EX → specials → throws → dashes → gatlings → normals → AI
+- AI expanded for new moves (AILevel / RoundState=2 / distance checks)
+- Docs: movelist.txt, MOVELIST.md, MOTIF_COMPAT.md; sync ikemen-go chars; zip rebuild
+
+## 2026-09-07 — New Grok Image art pass
+- Generated new pixel-art assets (idle, Crown Rush, Throne Breaker, Crown Dive, Ascension, portraits)
+- Chroma-keyed and injected into SFFv2 replacing groups 0, 1000, 1100, 650, 3300, 9000
+- Raw + processed art kept under /workspace/ff-char/newart/
+
+## 2026-09-07 — Consistent BK crown art pass
+- Regenerated full sprite set from one master idle for consistency
+- Burger King logo on crown across idle/specials/portraits
+- Rebuilt SFFv2; backup SaviorKing.sff.bak-pre-bk
+
+## 2026-09-07 — Multi-frame anim pass
+- Unique idle/walk/crouch/punch/Crown Rush/Throne Breaker/Dive/Ascension frame cycles
+- Built from locked BK-crown master for consistency
+- Action 650 remapped from sprite group 630 → 650
+
+## 2026-09-07 — Full consistency rebuild
+- Regenerated two locked sprite sheets (same BK-crown design throughout)
+- Replaced ALL body sprites in SFF from sheet cells only (no mixed gens)
+## 2026-09-07 — Visibility fix
+- Flood-fill chroma (bg was not true #FF00FF)
+- Hard binary alpha; sprites rebuilt at 160x220 so character is visible
+
+## 2026-09-07 — Dedicated special/super art
+- Unique sprite groups: 1050 EX Rush, 1200 Coronation, 1300 Royal Spin, 1400 Charge, 1500 Dive, 1600 Headpress, 3000 Crusher, 3200 Judgment, 3400 King Eats All
+- AIR + CNS retargeted so moves no longer reuse normal/punch anims
+
+## 2026-09-07 — Boss size retune (Goro/Shao/Death Adder class)
+- Was: xscale 1.35 / yscale 1.55 / height 155 + 160x220 sprites (way too big)
+- Now: xscale 1.08 / yscale 1.12 / height 92; sprites ~100x140
+- Tuned from CFJ_Goro (h75/s1) and AI-DAdder (h70/s1) as floor, slight boss bump
+
+## 2026-09-07 — Combat fix pass
+- Normalized every body sprite to same opaque height (~128px in 100x140)
+- Rebuilt per-frame Clsn1/Clsn2 from sprite alpha (fixes whiffing)
+- HitDef harden: hitflag MAF, hittimes, getpower
+- AI: higher super rates, supers on movehit cancels, gatling + special + super combo chains
+
+## 2026-09-07 — Hybrid DBZ/MK/MvC/SNK kit
+- Added Ki Blast, Instant Transmission, Dragon Kick
+- Supers: Royal Kamehameha (3500), King Spirit Bomb (3600)
+- Fatalities: Crown Execution (4000), Royal Devour (4100) when P2Life<=80
+- New sprites from hybrid sheet; AI uses ki/teleport/kamehameha/fatality
+
+## 2026-09-07 — Dedicated hybrid move art
+- Multi-frame sheets for Ki Blast, Teleport, Kamehameha, Dragon Kick, Spirit Bomb, both Fatalities
+- Projectile sprite group 1710; all frames uniform 100x140 / 128px body
+
+## 2026-09-08 — Neo / Shao Kahn / Beerus retheme
+- Removed Goku/DBZ move identity (Ki Blast, Instant Transmission, Dragon Kick, Kamehameha, Spirit Bomb names)
+- Renamed CMD: HakaiSpark, BulletSlip, EmperorShoulder, GodHakai, SphereRuin, FatalityDecree, FatalityErase
+- CNS: 1850 is grounded Shao Kahn shoulder charge; Bullet Slip invuln/afterimage; Hakai purple PalFX; God Hakai / Sphere of Ruin AfterImage+shake
+- Fatalities: Emperor's Decree / Void Erase (comments + light PalFX); sparkno=2 only
+- Art: Neo×Shao×Beerus sheets + unique multi-frame normals injected; SFF bak-pre-neo-retheme
+- Art source note: cursor GenerateImage MCP unavailable to executor subagent; recolored prior hybrid sheets + cells2 master + procedural hakai orbs; unique normal groups 210-250/410-450/610-650 injected
+
+## 2026-09-18 — Mega Kombos (KI × MK)
+- Named strings: Shadow Throne, Hakai Chain, Crown Breaker, Matrix Rush, Emperor Path (states 700-742)
+- Void Linker (750) via Var(47)=2 linker window (45 ticks) after string enders / special movehit
+- Plus enders into Emperor Shoulder / God Hakai / Sphere of Ruin; auto-doubles 705/715/735
+- CMD priority: fatalities → supers → Void Linker → string cont → EX → specials → openers/gatlings → normals
+- AI occasionally opens Shadow Throne / Hakai Chain when close; docs: MOVELIST.md + movelist.txt
+- No SFF rewrite; string anims reuse 200/210/220/230/240/1400
+
+## 2026-09-18 — PURE cells2 rebuild (no stuck orbs / no magenta stance)
+- Bodies ONLY from consistent/cells2/*.png whole frames (no head paste).
+- Idle Action 0 = a_0_0..a_0_3 breathe @ 6 ticks (Shao Kahn / Neo fluid idle).
+- NO purple orb overlays on idle/walk/normals; purple FX only groups 1710+.
+- pure_gen/sk_pure_idle_walk_normals.png SKIPPED (failed master identity — magenta wash).
+- CNS: removed 712 magenta PalFX; State 0 MagentaClear + State -2 IdlePalReset.
+- Softened color=0 PalFX on 1700/3500/4100.
+- AI expanded with fluid specials/strings (Hakai/BulletSlip/Shoulder/Spin/Charge/Dive/Headpress/CB/MR cancels).
+- Proof: newart/consistent/proof_neo/pure_no_orbs_contact.png
+- Backup: SaviorKing.sff.bak-pre-cells2-pure
+- Synced ikemen-go/chars/SaviorKing/; zip SaviorKing-finished.zip
+- FF3 Clsn: open /workspace/ff-char/SaviorKing/ (see FF3_CLSN_NOTE.txt)
+
+## 2026-09-18 — SATOSHI fluidity (existing state IDs)
+- AIR Action 0: idle breathe only, 7 ticks/cell, sprite group 0, Clsn2 only (no HitDef/Clsn1)
+- CMD: Elecbyte-safe distance-banded AI into 1700 / 1800 / 1850 / 700 / 710 / 750 / 3500 / 3600 (≥5 special entries); no &&+|| on same trigger line
+- CNS: cancel windows from string enders 702/712/722/732/742 and specials 1700/1850 → linker 750 and 1700/1850 (animelemtime ranges on separate trigger lines)
+- Stripped persistent MagentaClear / IdlePalReset PalFX from Statedef 0 / -2
+- State IDs unchanged (no renumber to 1100-1500); SFF not rewritten
+
+## 2026-09-18 — No-club fist-only HP/HK pass
+- Audit: cells2 b_1_0 was gold club; b_1_3 was bust crop; both fed groups 220/230/240/250/420/440/450/620/640/650 + specials + 4000 mace overlay
+- Banned b_1_0 / b_1_3 from body pools; HP 220 = a_1_* martial cycle; HK 230/240/250 = a_1/b_0/b_1_1/b_1_2 fist poses
+- Removed draw_gold_mace from fatality group 4000
+- Re-injected SFFv2 PNG32; backup SaviorKing.sff.bak-pre-no-club
+- Proof: newart/consistent/proof_neo/no_club_contact.png (before/after 220/230/240/250/4000)
+- Zip rebuilt: /workspace/ff-char/SaviorKing-finished.zip
+- NOT pushed to Baki — ready for main agent CopyFromBox
+
+## 2026-09-18 — MvC normals / launcher / juggle pass
+- CMD: punch↔kick cross cancels (stand/crouch/jump); air cancel into Hakai Spark 1700 / Bullet Slip 1800 from jump normals + strings
+- CNS: HP 220 dedicated launcher + jump-cancel; 702 launcher tuned + jump-cancel; jump HitDefs yaccel/cornerpush/air.hittime; airjuggle=30; crouch ends→11; 1700/1800 AirOK
+- AI: all 6 normals, crouch, jump-ins, launcher→juggle gatlings, air special cancels; split unsafe ||/&& triggers
+- Docs: MOVELIST.md MvC section + juggle route example
+- Art: reuse AIR 200-250 / 400-450 / 600-650 (no new groups; 700/702/750 still reuse 200/210/1400)
+- Zip: /workspace/ff-char/SaviorKing-finished.zip (NOT CopyFromBox to Baki)
+
+## 2026-09-18 — Expanded depth (cells2-only)
+- Dedicated AIR/SFF groups 700/701/702/705/715/735/750 + divekick 660
+- Denser 6-frame normals/jumps/crouch (200-250, 400-450, 600-650)
+- Derived bank: newart/consistent/cells2_expanded/ (affine/flip/composite only)
+- CNS mega kombos retargeted to dedicated anims; Crown Dive → anim 660
+- Proof: newart/consistent/proof_neo/master_only_expanded_contact.png
+- BAN unchanged: b_1_0 club, b_1_3 bust; no purple on body normals
+- Backup: SaviorKing.sff.bak-pre-expanded-depth
+
+## 2026-09-18 — Fusion P0 depth (Neo × Shao × Beerus)
+- Survey shortlist: FUSION_FROM_CHARS.md (Baki MUGEN+Ikemen; GeeseXIV / God Rugal / Zangief / Shao / King / MvC signals)
+- P0 CMD+CNS+AIR stubs: Void Dive 1650, Void Spike 670, Void Grip 850-853, Kahn Hammer 1900,
+  Hakai Barrage 1910, Shadow Step 1920, Matrix Air Dash 2100/2101, Wall Jump 2110, Void Cascade 760-762
+- Run cancel from state 100 into 1700/1800/1850/1000-1002; Crown Dive 1500 vel polish
+- Avoided state collisions with 660(anim),700-750,1700,1800,1850,3500,3600,4000,4100
+- Art: reuse expanded cells2 AIR groups; TODO art marked; NO GenerateImage; no Beerus-ears in main SFF
+- MOVELIST.md updated; zip SaviorKing-finished.zip — NOT installed to Baki
+
+## 2026-09-18 — Fusion moves dedicated denser art
+- Dedicated AIR/SFF: 670,760-762,850-851,1650,1900,1910,1915FX,1920,2100,2101,2110
+- Derived from cells2 allowed only (affine/flip/stretch/composite); master a_0_0 identity
+- CNS: 1650→anim 1650 (was 660); 2101→2101; Hakai proj→1915 purple FX group
+- Proof: newart/consistent/proof_neo/fusion_moves_master_contact.png
+- Backup: SaviorKing.sff.bak-pre-fusion-moves (+ air/cns)
+- BAN unchanged: b_1_0/b_1_3, no purple on bodies, no GenerateImage
+
+## 2026-09-18 — Specials/supers densify (anti-jab-recycle)
+- UNIQUE 6-frame poses: 1700/1800/1850 specials; 3500/3600 supers; 4000/4100 fatals
+- Combo 700/701/702/705/715/735/750 rebuilt: step-in/launcher/shoulder (no jab cell reuse)
+- 1710 purple FX densified to 6 frames (separate from body)
+- Proof: proof_neo/fusion_moves_master_contact.png + specials_supers_vs_jab_contact.png
+- Backup: SaviorKing.sff.bak-pre-specials-supers
+
+## 2026-09-18 — Combo fusion (strings / gatlings / BnBs)
+- Survey focus: Geese Rave, King dial, Shao crush, Balrog magic series, Akuma air cancel, Bruce/baki kick/air, Goro weight (Baki machineId unavailable in executor — used refs + prior survey)
+- NEW ground strings: Beerus Beat (770-772), Neo Kickline (773-775), Kahn Crush (780-782), Royal Rave (783-784-788)
+- NEW crouch string: Matrix Crawl (785-787)
+- NEW air routes: Sky Throne (790-792), Air Cascade (793-795) → Hakai/Slip/Spike
+- Longer cancel windows (gatlings 28f, jump-cancel 32f, linker 60t); AI prefers strings
+- Docs: COMBO_FUSION.md + MOVELIST Combo section; no SFF/art
+## 2026-10-12 — Finish pass on live 9/18 pack (Negan)
+- State 3100 (Savior Ascension) now uses its dedicated AIR action 3100
+  (was 3300): the 9/18 CLSN pass already built per-frame Clsn for action
+  3100, but the state never pointed at it.
+- Throw victim failsafe: state 820 SelfStates to 5050 at Time >= 60, so the
+  victim can never hard-lock if P1's throw (810) is interrupted before the
+  time=20 TargetState drop to 821.
+- Boss AI: ground approach in CNS Statedef 0 (AI turn + VelSet walk toward at
+  4.2 + walk anim 20, all AILevel-gated; human controls untouched).
+- Boss AI: AI Throw (800) at close range and AI okizeme (meaty MK on P2's
+  get-up 5150) appended to CMD; existing 9/18 AI (gatlings, cancels, bands,
+  juggles, anti-air) left intact.
