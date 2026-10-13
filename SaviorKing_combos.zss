@@ -1,0 +1,142 @@
+#===============================================================================
+# Savior King — Ikemen ZSS combo routes (Royal Rave + Void Linker + Throne notes)
+# Loaded ONLY by Ikemen via st3= AFTER CNS (see ZSS_README.md).
+# Same StateDef numbers REPLACE CNS copies under Ikemen; MUGEN keeps CNS.
+# Requires SaviorKing_helpers.zss (st2) loaded first for call SK_* functions.
+#===============================================================================
+
+#===============================================================================
+# Void Linker — state 750 (KI linker dash)
+#===============================================================================
+[StateDef 750;
+type: S; movetype: A; physics: N;
+juggle: 8; ctrl: 0; velset: 10, 0;
+anim: 750; sprpriority: 3; poweradd: 0;]
+
+if time = 0 {
+	afterImage{
+		time: 16;
+		trans: add1;
+		PalBright: 20, 0, 40;
+		PalContrast: 200, 160, 255;
+		PalAdd: 10, 0, 20;
+		PalMul: .8, .7, 1.1;
+		FrameGap: 2;
+	}
+	playSnd{value: S1, 0}
+	call SK_UseVoidLinker();
+}
+
+if animElem = 2 {
+	call SK_HitDef_VoidLinker();
+}
+
+if animElem = 3 {
+	velSet{x: 3}
+}
+
+# Plus enders from linker recovery
+call SK_CancelPlusEnders();
+call SK_EndStand();
+
+#===============================================================================
+# Royal Rave — 783 → 784 → 788 (x, x, a)  Geese-style stub + launcher ender
+# CMD chain remains in SaviorKing.cmd; these states are the ZSS bodies.
+#===============================================================================
+
+#--- 783 opener (LP) ---
+[StateDef 783;
+type: S; movetype: A; physics: S;
+juggle: 4; ctrl: 0; velset: 0, 0;
+anim: 200; sprpriority: 2;]
+
+call SK_PlayAttack();
+call SK_Route_RoyalRave_Mark();
+
+if animElem = 2 {
+	call SK_HitDef_StandLight(34, 0, 8, -4);
+}
+
+if moveHit {
+	call SK_MegaOpen();
+}
+
+# Continue: CMD [State -1, RR 783 to 784] → 784 on x + movehit
+call SK_EndStand();
+
+#--- 784 mid (LP again) ---
+[StateDef 784;
+type: S; movetype: A; physics: S;
+juggle: 4; ctrl: 0; velset: 0, 0;
+anim: 200; sprpriority: 2;]
+
+call SK_PlayAttack();
+
+if animElem = 2 {
+	call SK_HitDef_StandLight(34, 0, 8, -4);
+}
+
+# Continue: CMD [State -1, RR 784 to 788] → 788 on a + movehit
+call SK_EndStand();
+
+#--- 788 launcher ender (LK anim / launch) ---
+[StateDef 788;
+type: S; movetype: A; physics: S;
+juggle: 4; ctrl: 0; velset: 0, 0;
+anim: 230; sprpriority: 2;]
+
+call SK_PlayAttack();
+
+if animElem = 2 {
+	call SK_HitDef_RaveLauncher(52, 0, 10);
+}
+
+if moveHit {
+	call SK_ArmLinker(60);
+}
+
+call SK_JumpCancelLauncher();
+call SK_CancelToVoidLinker();
+call SK_CancelPlusEnders();
+call SK_EndStand();
+
+#===============================================================================
+# Throne Launch route — Shadow Throne ender 702 (BnB A launcher node)
+# Full route still uses CNS air states + CMD; this ZSS body clarifies maps.
+#===============================================================================
+[StateDef 702;
+type: S; movetype: A; physics: S;
+juggle: 0; ctrl: 0; velset: 0, 0;
+anim: 702; sprpriority: 2;]
+
+call SK_PlayAttack();
+call SK_Route_ThroneLaunch_Mark();
+
+if animElem = 2 {
+	# Throne launcher numbers match CNS 702
+	call SK_HitDef_Launcher(55, 0, 10, -1.2, -11, -11);
+}
+
+if moveHit {
+	call SK_ArmLinker(60);
+}
+
+call SK_JumpCancelLauncher();
+call SK_CancelToVoidLinker();
+call SK_CancelPlusEnders();
+
+if animTime = 0 {
+	changeState{value: 0; ctrl: 1}
+}
+
+#===============================================================================
+# Reference: Throne Launch BnB (map clarity — not a StateDef)
+#===============================================================================
+# map(sk_route)=1 when 702 (or CNS 220/781) launches.
+# Sequence (Ikemen):
+#   1. Confirm LP→MP / Hakai Chain → HP 220 OR Throne 702 OR Crush 781
+#   2. SK_JumpCancelLauncher → 40 → air Sky Throne 790+ or j.MP→j.HP
+#   3. Air: Hakai Spark 1700 / Void Spike 670
+#   4. Land: Void Linker 750 while map(sk_megaStage)=2 / Var(47)=2
+#   5. Plus: 1850 / 3500 / 3600
+# Vars that MUST remain for MUGEN CMD: Var(47), Var(48), Var(49).

@@ -1,16 +1,5 @@
-SAVIOR KING
-===========
-Normals     : x y z punches, a b c kicks (stand / crouch / jump)
-Throw       : F + y  (close)
-Run         : F, F
-
-SPECIALS
-Crown Rush      : QCF + Punch
-Throne Breaker  : DP + Kick          (anti-air)
-Coronation      : HCB + Punch        (command grab)
-Royal Spin      : QCB + Kick
-
-SUPERS
-Crown Crusher (MvC hyper)     : QCF, QCF + Punch     1 stock
-Royal Judgment (SNK climax)   : QCB, QCB + Punch     2 stocks
-King Eats All (MK fatal blow) : QCF, QCF + Kick      2 stocks, life <= 330
+Savior King — MvC normals
+Stand: LP200 MP210 HP220(launcher) LK230 MK240 HK250
+Crouch: 400-450  Jump: 600-650
+Magic: LP>MP>HP  LK>MK>HK  + punch/kick cross cancels
+Juggle: HP220 or ST702 jump-cancel > j.MP>j.HP > Hakai1700 / Void750 enders

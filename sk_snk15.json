@@ -1,0 +1,201 @@
+{
+  "name": "sk_snk15",
+  "style": "Neo Geo / KOF 15-color (+ index 0 transparent)",
+  "master": "/workspace/ff-char/newart/consistent/cells2/a_0_0.png",
+  "index0": {
+    "rgb": [
+      0,
+      0,
+      0
+    ],
+    "role": "transparent",
+    "note": "SFF sprites use alpha=0; ACT idx0 is clear placeholder"
+  },
+  "opaque_count": 15,
+  "fx_palette": "SHARED with body \u2014 purple_shadow/mid/hi cover group 1710 orb FX (and 1750/1760/1915)",
+  "colors": [
+    {
+      "index": 1,
+      "role": "outline",
+      "rgb": [
+        24,
+        8,
+        14
+      ],
+      "hex": "#18080E"
+    },
+    {
+      "index": 2,
+      "role": "hair_shadow",
+      "rgb": [
+        42,
+        22,
+        18
+      ],
+      "hex": "#2A1612"
+    },
+    {
+      "index": 3,
+      "role": "hair_hi",
+      "rgb": [
+        78,
+        42,
+        28
+      ],
+      "hex": "#4E2A1C"
+    },
+    {
+      "index": 4,
+      "role": "skin_shadow",
+      "rgb": [
+        148,
+        72,
+        42
+      ],
+      "hex": "#94482A"
+    },
+    {
+      "index": 5,
+      "role": "skin_mid",
+      "rgb": [
+        210,
+        128,
+        72
+      ],
+      "hex": "#D28048"
+    },
+    {
+      "index": 6,
+      "role": "skin_hi",
+      "rgb": [
+        240,
+        168,
+        112
+      ],
+      "hex": "#F0A870"
+    },
+    {
+      "index": 7,
+      "role": "gold_shadow",
+      "rgb": [
+        148,
+        92,
+        28
+      ],
+      "hex": "#945C1C"
+    },
+    {
+      "index": 8,
+      "role": "gold_mid",
+      "rgb": [
+        212,
+        156,
+        48
+      ],
+      "hex": "#D49C30"
+    },
+    {
+      "index": 9,
+      "role": "gold_hi",
+      "rgb": [
+        248,
+        216,
+        96
+      ],
+      "hex": "#F8D860"
+    },
+    {
+      "index": 10,
+      "role": "purple_shadow",
+      "rgb": [
+        48,
+        8,
+        64
+      ],
+      "hex": "#300840"
+    },
+    {
+      "index": 11,
+      "role": "purple_mid",
+      "rgb": [
+        96,
+        28,
+        128
+      ],
+      "hex": "#601C80"
+    },
+    {
+      "index": 12,
+      "role": "purple_hi",
+      "rgb": [
+        156,
+        72,
+        188
+      ],
+      "hex": "#9C48BC"
+    },
+    {
+      "index": 13,
+      "role": "red_shadow",
+      "rgb": [
+        128,
+        16,
+        24
+      ],
+      "hex": "#801018"
+    },
+    {
+      "index": 14,
+      "role": "red_hi",
+      "rgb": [
+        208,
+        40,
+        40
+      ],
+      "hex": "#D02828"
+    },
+    {
+      "index": 15,
+      "role": "gem",
+      "rgb": [
+        236,
+        48,
+        56
+      ],
+      "hex": "#EC3038"
+    }
+  ],
+  "p2_blue_swap_hint": {
+    "purple_shadow": [
+      8,
+      24,
+      72
+    ],
+    "purple_mid": [
+      24,
+      56,
+      160
+    ],
+    "purple_hi": [
+      72,
+      120,
+      220
+    ],
+    "red_shadow": [
+      16,
+      40,
+      96
+    ],
+    "red_hi": [
+      40,
+      96,
+      208
+    ],
+    "gem": [
+      56,
+      140,
+      236
+    ],
+    "note": "Swap cape purple\u2192blue and trunks/gem red\u2192blue for classic P2; keep skin/gold/hair/outline."
+  }
+}

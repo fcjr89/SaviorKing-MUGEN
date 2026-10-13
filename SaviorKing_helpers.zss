@@ -1,0 +1,266 @@
+#===============================================================================
+# Savior King — Ikemen ZSS helpers (HitDef wrappers + mega-kombo maps)
+# Loaded ONLY by Ikemen via st2= (see ZSS_README.md / SaviorKing_Ikemen.def).
+# MUGEN 1.1 never reads this file; CNS remains authoritative there.
+# Wiki: https://github.com/ikemen-engine/Ikemen-GO/wiki/ZSS
+#===============================================================================
+#
+# MAP vs VAR (dual-compat contract)
+# ---------------------------------
+# Ikemen NEW logic prefers map() for readable combo state.
+# CMD / MUGEN path still gates on Var(47)/Var(48)/Var(49) — keep those in sync
+# whenever ZSS helpers arm/consume the linker so existing SaviorKing.cmd works.
+#
+#   map(sk_megaStage)   <-> Var(47)   0 idle · 1 opener · 2 linker ready · 3 used
+#   map(sk_linkerTicks) <-> Var(48)   linker window countdown (CNS -2 ticks this)
+#   map(sk_airDashUsed) <-> Var(49)   one air-dash per jump (CNS -2 resets on S/C)
+#   map(sk_route)       Ikemen-only: named route tag (0 none, 1 ThroneLaunch,
+#                       2 RoyalRave, 3 VoidLinker) — clarity, not CMD-gated
+#
+# CNS StateDef -2 still owns: round reset, linker tick/expire, special→linker.
+# Do NOT duplicate VarAdd on Var(48) here (would double-tick under Ikemen).
+#===============================================================================
+
+#-------------------------------------------------------------------------------
+# Sync helpers — always write map AND var so CMD + ZSS stay aligned
+#-------------------------------------------------------------------------------
+[Function SK_MegaIdle()]
+map(sk_megaStage) := 0;
+map(sk_linkerTicks) := 0;
+var(47) := 0;
+var(48) := 0;
+
+[Function SK_MegaOpen()]
+# Opener hit on a named string (e.g. Royal Rave 783)
+map(sk_megaStage) := 1;
+var(47) := 1;
+
+[Function SK_ArmLinker(ticks)]
+# String ender / special hit → Void Linker window
+map(sk_megaStage) := 2;
+map(sk_linkerTicks) := $ticks;
+var(47) := 2;
+var(48) := $ticks;
+
+[Function SK_UseVoidLinker()]
+# Entered state 750 — consume window
+map(sk_megaStage) := 3;
+map(sk_linkerTicks) := 0;
+map(sk_route) := 3;
+var(47) := 3;
+var(48) := 0;
+
+[Function SK_SetRoute(id)]
+map(sk_route) := $id;
+
+#-------------------------------------------------------------------------------
+# Common cancel / end helpers
+#-------------------------------------------------------------------------------
+[Function SK_EndStand()]
+if animTime = 0 {
+	changeState{value: 0; ctrl: 1}
+}
+
+[Function SK_EndAirCtrl()]
+if animTime = 0 {
+	changeState{value: 50; ctrl: 1}
+}
+
+[Function SK_PlayAttack()]
+if animElem = 2 {
+	playSnd{value: S1, 0}
+}
+
+# Jump-cancel launcher window (matches CNS animelemtime < 32 after hit elem)
+[Function SK_JumpCancelLauncher()]
+if moveHit && command = "holdup" && stateType != A {
+	if animElemTime(2) > 0 && animElemTime(2) < 32 {
+		changeState{value: 40}
+	}
+}
+
+# Void Linker cancel from string ender (animelemtime ≤ 28) — mega kombo cancel
+[Function SK_CancelToVoidLinker()]
+if moveHit && map(sk_megaStage) = 2 && var(48) > 0 && stateType != A {
+	if animElemTime(2) >= 0 && animElemTime(2) <= 28 {
+		if command = "VoidLinker" || command = "VoidLinkerXY" {
+			changeState{value: 750}
+		}
+	}
+}
+
+# Plus-ender cancel after linker / string (Shoulder / God Hakai / Sphere)
+[Function SK_CancelPlusEnders()]
+if moveHit && (map(sk_megaStage) = 2 || map(sk_megaStage) = 3) && stateType != L {
+	if command = "EmperorShoulder" {
+		changeState{value: 1850}
+	} else if command = "GodHakai" && command = "c" && command != "holddown" && stateType = S {
+		changeState{value: 3500}
+	} else if command = "SphereRuin" {
+		changeState{value: 3600}
+	}
+}
+
+#-------------------------------------------------------------------------------
+# HitDef wrappers — repeated stand-normal / launcher / linker patterns
+# Params: damage, guard_damage, pause, ground_vx [, air_vy for launchers]
+#-------------------------------------------------------------------------------
+
+# Light stand normal (LP-class / Royal Rave stubs) — mirrors CNS 200 / 783 / 784
+[Function SK_HitDef_StandLight(dmg, gdmg, pause, gvx)]
+hitDef{
+	attr: S, NA;
+	damage: $dmg, $gdmg;
+	animtype: Light;
+	air.animtype: Back;
+	guardflag: HL;
+	hitflag: MAF;
+	pausetime: $pause, $pause;
+	sparkno: 2;
+	sparkxy: -10, -70;
+	hitsound: 5, 0;
+	guardsound: F6, 0;
+	ground.type: High;
+	ground.slidetime: 12;
+	ground.hittime: 15;
+	ground.velocity: $gvx, 0;
+	air.velocity: -3, -5;
+	guard.velocity: -6;
+	air.hittime: 16;
+	p2facing: 1;
+	getpower: 55, 25;
+	givepower: 25, 12;
+}
+
+# Medium stand normal (MP-class)
+[Function SK_HitDef_StandMedium(dmg, gdmg, pause, gvx)]
+hitDef{
+	attr: S, NA;
+	damage: $dmg, $gdmg;
+	animtype: Medium;
+	air.animtype: Back;
+	guardflag: HL;
+	hitflag: MAF;
+	pausetime: $pause, $pause;
+	sparkno: 2;
+	sparkxy: -10, -70;
+	hitsound: 5, 0;
+	guardsound: F6, 0;
+	ground.type: High;
+	ground.slidetime: 14;
+	ground.hittime: 17;
+	ground.velocity: $gvx, 0;
+	air.velocity: -3, -5;
+	guard.velocity: -7;
+	air.hittime: 15;
+	p2facing: 1;
+	ground.cornerpush.veloff: 0;
+	getpower: 80, 40;
+	givepower: 40, 20;
+}
+
+# Dedicated launcher (HP 220 / Throne 702 / Crush 781 / Rave 788)
+[Function SK_HitDef_Launcher(dmg, gdmg, pause, gvx, gvy, airy)]
+hitDef{
+	attr: S, NA;
+	damage: $dmg, $gdmg;
+	animtype: DiagUp;
+	air.animtype: DiagUp;
+	guardflag: HL;
+	hitflag: MAF;
+	pausetime: $pause, $pause;
+	sparkno: 2;
+	sparkxy: -10, -70;
+	hitsound: 5, 0;
+	guardsound: F6, 0;
+	ground.type: High;
+	ground.slidetime: 14;
+	ground.hittime: 22;
+	ground.velocity: $gvx, $gvy;
+	air.velocity: $gvx, $airy;
+	guard.velocity: -8;
+	air.hittime: 24;
+	fall: 1;
+	fall.recover: 1;
+	fall.recovertime: 32;
+	yaccel: 0.34;
+	p2facing: 1;
+	ground.cornerpush.veloff: 0;
+	air.cornerpush.veloff: 0;
+	priority: 5, Hit;
+	getpower: 70, 35;
+	givepower: 35, 18;
+}
+
+# Soft launcher / Rave ender (788-style — Medium + DiagUp air)
+[Function SK_HitDef_RaveLauncher(dmg, gdmg, pause)]
+hitDef{
+	attr: S, NA;
+	damage: $dmg, $gdmg;
+	animtype: Medium;
+	air.animtype: DiagUp;
+	guardflag: HL;
+	hitflag: MAF;
+	pausetime: $pause, $pause;
+	sparkno: 2;
+	sparkxy: -10, -70;
+	hitsound: 5, 0;
+	guardsound: F6, 0;
+	ground.type: High;
+	ground.slidetime: 12;
+	ground.hittime: 15;
+	ground.velocity: -4, -2;
+	air.velocity: -3, -7;
+	guard.velocity: -6;
+	air.hittime: 16;
+	p2facing: 1;
+	fall: 1;
+	fall.recover: 1;
+	fall.recovertime: 28;
+	yaccel: 0.4;
+	getpower: 55, 25;
+	givepower: 25, 12;
+}
+
+# Void Linker HitDef (state 750)
+[Function SK_HitDef_VoidLinker()]
+hitDef{
+	attr: S, SA;
+	damage: 35, 5;
+	animtype: DiagUp;
+	air.animtype: Back;
+	guardflag: HL;
+	hitflag: MAF;
+	pausetime: 8, 8;
+	sparkno: 2;
+	sparkxy: -10, -70;
+	hitsound: 5, 0;
+	guardsound: F6, 0;
+	ground.type: High;
+	ground.slidetime: 12;
+	ground.hittime: 16;
+	ground.velocity: -1.5, -8;
+	air.velocity: -1.5, -8.5;
+	guard.velocity: -8;
+	air.hittime: 22;
+	fall: 1;
+	fall.recover: 1;
+	p2facing: 1;
+	yaccel: 0.32;
+	ground.cornerpush.veloff: 0;
+	getpower: 40, 20;
+	givepower: 20, 10;
+}
+
+#-------------------------------------------------------------------------------
+# Throne Launch route helper (BnB A) — documentation-as-code for Ikemen
+# Confirm → launcher → jump-cancel → air → land Void Linker → plus ender
+# Does not ChangeState by itself; sets map(sk_route) and arms linker on call sites.
+#-------------------------------------------------------------------------------
+[Function SK_Route_ThroneLaunch_Mark()]
+call SK_SetRoute(1);
+# Launcher states that open this route: 220, 702, 781 (CNS). On movehit they
+# should call SK_ArmLinker(60) then SK_JumpCancelLauncher / air follow-ups.
+
+[Function SK_Route_RoyalRave_Mark()]
+call SK_SetRoute(2);
